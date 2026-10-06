@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14205e">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Финал кейс-чемпионата">
+<meta property="og:description" content="Кейс выдан. Время на решение: 5 минут.">
+<title>Финал кейс-чемпионата</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a pitch deck in the client's own favourite style. Timeline on top, glass cards over a moving blue-lilac background. */
+:root{
+  --navy:#101a52;      /* base */
+  --blue:#2c5be0;      /* синяя стена с фото */
+  --lilac:#c4adf4;     /* футболки «Дедлайна» */
+  --cyan:#6fd6ea;
+  --white:#ffffff;
+  --soft:#dfe4ff;      /* второстепенный текст */
+  --win:#ffd36b;       /* победа, баллы */
+  --glass:rgba(255,255,255,.13);
+  --glass-line:rgba(255,255,255,.30);
+  --f-body:"Onest","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--navy);color:var(--white)}
+body{font-family:var(--f-body);overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--win);outline-offset:3px}
+#app{position:relative;height:100%;max-width:480px;margin:0 auto;overflow:hidden;background:var(--navy)}
+
+/* moving background */
+.bg{position:absolute;inset:-20%;pointer-events:none}
+.bg i{position:absolute;border-radius:50%;animation:drift 18s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:90%;height:70%;left:-20%;top:-5%;background:radial-gradient(closest-side,var(--blue),transparent)}
+.bg i:nth-child(2){width:85%;height:65%;right:-25%;top:20%;background:radial-gradient(closest-side,var(--lilac),transparent);animation-duration:22s;opacity:.75}
+.bg i:nth-child(3){width:75%;height:60%;left:5%;bottom:-10%;background:radial-gradient(closest-side,var(--cyan),transparent);animation-duration:26s;opacity:.5}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(8%,6%) scale(1.12)}100%{transform:translate(-6%,10%) scale(.95)}}
+
+/* top timeline */
+.tl{position:absolute;z-index:10;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 58px 10px 16px;background:rgba(16,26,82,.35);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.tl-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;grid-column:1/-1}
+.tl-bars button{border:0;padding:0;height:22px;background:none;display:flex;flex-direction:column;gap:5px;align-items:stretch;text-align:left}
+.tl-bars button i{display:block;height:4px;border-radius:4px;background:rgba(255,255,255,.22);overflow:hidden}
+.tl-bars button i::after{content:"";display:block;height:100%;width:0;background:var(--white);transition:width .5s}
+.tl-bars button.done i::after,.tl-bars button.cur i::after{width:100%}
+.tl-bars button.cur i::after{background:var(--win)}
+.tl-bars button span{font:500 9.5px/1 var(--f-body);color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-bars button.cur span{color:var(--white)}
+.tl-bars button:disabled{cursor:default}
+.tl-meta{font:500 11px/1 var(--f-mono);color:var(--soft);letter-spacing:.04em}
+.tl-timer{font:700 12px/1 var(--f-mono);color:var(--white);padding:6px 9px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line)}
+.tl-timer.low{color:var(--win)}
+
+/* slides */
+.slide{position:absolute;inset:0;z-index:5;display:none;flex-direction:column;gap:14px;overflow-y:auto;overscroll-behavior:contain;
+  padding:calc(env(safe-area-inset-top,0px) + 96px) 16px calc(env(safe-area-inset-bottom,0px) + 96px)}
+.slide.on{display:flex;animation:in .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#cover{justify-content:center;padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
+
+.glass{position:relative;background:var(--glass);border:1px solid var(--glass-line);border-radius:26px;padding:18px;
+  backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 18px 40px rgba(8,12,40,.32)}
+.eyebrow{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.025em;text-wrap:balance}
+h1{font-size:clamp(38px,11.5vw,52px);line-height:.98}
+h2{font-size:clamp(28px,8.4vw,36px);line-height:1.02}
+h3{font-size:17px;line-height:1.2;letter-spacing:-.01em}
+p{margin:0;font-size:15.5px;line-height:1.5}
+.soft{color:var(--soft)}
+q{quotes:"«" "»"}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* bottom nav */
+.nav{position:absolute;z-index:10;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;gap:10px}
+.btn{flex:1;border:0;border-radius:18px;padding:17px 18px;background:var(--white);color:var(--navy);font:700 16px/1 var(--f-body);
+  box-shadow:0 10px 30px rgba(8,12,40,.35)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4}
+.btn.back{flex:0 0 56px;padding:0;background:var(--glass);color:var(--white);border:1px solid var(--glass-line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:none;font-size:20px}
+
+/* cover */
+.cover-card{display:flex;flex-direction:column;gap:16px;padding:24px 20px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;font-size:14.5px}
+.kv span{color:var(--soft)}
+.kv b{font-weight:700;text-align:right}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.16);font:500 12px/1 var(--f-mono)}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff6b6b;box-shadow:0 0 10px #ff6b6b;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.3}}
+
+/* story timeline */
+.story{position:relative;display:flex;flex-direction:column;gap:12px;padding-left:22px}
+.story::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;border-radius:2px;background:rgba(255,255,255,.25)}
+.ev{position:relative;display:none}
+.ev.in{display:block;animation:in .45s ease-out both}
+.ev::before{content:"";position:absolute;left:-21px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--white);box-shadow:0 0 0 4px rgba(255,255,255,.2)}
+.ev .glass{padding:14px 16px;border-radius:20px;display:flex;flex-direction:column;gap:6px}
+.ev time{font:500 11px/1 var(--f-mono);color:var(--soft);letter-spacing:.06em}
+.ev p{font-size:15px}
+.ev img{display:block;width:100%;max-width:100%;border-radius:14px;margin-top:6px}
+
+/* data */
+.bars{display:flex;flex-direction:column;gap:14px}
+.bar{display:flex;flex-direction:column;gap:6px}
+.bar .row{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.bar .row b{font:700 15px/1 var(--f-mono)}
+.bar .track{height:12px;border-radius:12px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar .fill{height:100%;width:0;border-radius:12px;background:linear-gradient(90deg,var(--cyan),var(--white));transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.bar.alt .fill{background:linear-gradient(90deg,var(--lilac),var(--white))}
+.insight{font-size:14.5px;line-height:1.45;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.1)}
+
+/* sizing */
+.guess{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.guess .big{font:700 84px/1 var(--f-mono);letter-spacing:-.04em}
+input[type=range]{width:100%;accent-color:var(--white);height:28px}
+.scale{display:flex;justify-content:space-between;width:100%;font:500 11px/1 var(--f-mono);color:var(--soft)}
+.inv{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.inv li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:14px;line-height:1.4;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}
+.inv li.in{opacity:1;transform:none}
+.inv li i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 12px/1 var(--f-mono);background:rgba(255,107,107,.25);color:#ffb0b0}
+.inv li.ok i{background:rgba(120,230,170,.28);color:#a8f0c8}
+.inv li span em{font-style:normal;color:var(--soft)}
+.verdict{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.verdict b{font:700 40px/1 var(--f-mono)}
+
+/* strategy cards */
+.cards{display:flex;flex-direction:column;gap:12px}
+.flip{display:flex;flex-direction:column;gap:6px;width:100%;text-align:left;color:var(--white)}
+.flip h3{font-size:24px}
+.flip .hint{font-size:13px;color:var(--soft)}
+.flip .body{display:none;font-size:14.5px;line-height:1.5;padding-top:10px;margin-top:4px;border-top:1px solid var(--glass-line)}
+.flip.open .body{display:block;animation:in .4s ease-out both}
+.flip.open .hint{display:none}
+.reco{display:none}
+.reco.in{display:block;animation:in .5s ease-out both}
+
+/* jury */
+.crit{display:flex;flex-direction:column;gap:10px}
+.crit .c{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.1)}
+.crit .c small{grid-column:1;font-size:13px;color:var(--soft);line-height:1.35}
+.crit .c b{grid-row:span 2;grid-column:2;font:700 30px/1 var(--f-mono);color:var(--win)}
+.total{display:flex;justify-content:space-between;align-items:baseline}
+.total b{font:700 54px/1 var(--f-mono);color:var(--win)}
+.win{align-self:center;padding:10px 16px 8px;border:3px solid var(--win);border-radius:14px;color:var(--win);font:800 22px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;transform:rotate(-6deg) scale(2);opacity:0}
+.win.hit{animation:stamp .35s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes stamp{to{transform:rotate(-6deg) scale(1);opacity:1}}
+
+/* final */
+.photo{display:block;width:100%;max-width:100%;border-radius:22px;border:1px solid var(--glass-line);box-shadow:0 18px 40px rgba(8,12,40,.4)}
+.letter p{margin-bottom:12px}
+.letter p:last-child{margin-bottom:0}
+.bold-out{font:800 clamp(40px,12.5vw,58px)/.95 var(--f-body);letter-spacing:-.035em}
+.sign{font:700 15px/1 var(--f-mono);color:var(--soft)}
+
+#confetti{position:absolute;inset:0;z-index:20;pointer-events:none}
+#mute{position:absolute;z-index:30;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--glass-line);background:var(--glass);display:grid;place-items:center;padding:0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#mute svg{width:16px;height:16px}
+#mute .off{display:none} #mute.muted .on{display:none} #mute.muted .off{display:block}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="tl" id="tl" hidden>
+    <div class="tl-meta">Кейс · Нияз Фанилович</div>
+    <div class="tl-timer mono" id="timer">05:00</div>
+    <nav class="tl-bars" id="tlBars" aria-label="Разделы кейса"></nav>
+  </header>
+
+  <!-- 0. Cover -->
+  <section class="slide" id="cover">
+    <div class="glass cover-card">
+      <span class="chip">Финал · идёт сейчас</span>
+      <div class="eyebrow">Кейс-чемпионат</div>
+      <h1>Кейс: Нияз Фанилович</h1>
+      <div class="kv">
+        <span>Участник</span><b>Хусаинов Нияз</b>
+        <span>Ментор</span><b>Серёжа</b>
+        <span>Данные</span><b class="mono">839 сообщений</b>
+        <span>Время</span><b class="mono">5 минут</b>
+      </div>
+      <p class="soft" style="font-size:13.5px">Включи звук. Свёрстано в твоём любимом стиле: таймлайн сверху, фоны, стекло.</p>
+    </div>
+  </section>
+
+  <!-- 1. Brief -->
+  <section class="slide" id="brief">
+    <div class="eyebrow">01 · Бриф</div>
+    <h2>Клиент сложный. Кейс простой.</h2>
+    <div class="glass">
+      <div class="kv">
+        <span>Клиент</span><b>Нияз Фанилович</b>
+        <span>База</span><b>Казань · Космос</b>
+        <span>Дресс-код</span><b>костюм</b>
+        <span>Слово-паразит</span><b>«брат»</b>
+      </div>
+    </div>
+    <div class="glass">
+      <h3>Ситуация</h3>
+      <p class="soft" style="margin-top:6px">Сегодня у клиента день рождения. Ментор собирал данные с мая 2025 года и готов защищать.</p>
+    </div>
+    <div class="glass">
+      <h3>Задача</h3>
+      <p class="soft" style="margin-top:6px">Доказать жюри, что это лучший клиент в портфеле ментора. Ограничение: клиент не ест плов, он всегда сыт.</p>
+    </div>
+  </section>
+
+  <!-- 2. Story -->
+  <section class="slide" id="story">
+    <div class="eyebrow">02 · История</div>
+    <h2>Как мы здесь оказались</h2>
+    <div class="story" id="storyList"></div>
+  </section>
+
+  <!-- 3. Data -->
+  <section class="slide" id="data">
+    <div class="eyebrow">03 · Данные</div>
+    <h2>Анализ переписки</h2>
+    <p class="soft">15.05.2025 — 28.09.2026 · 839 сообщений</p>
+    <div class="glass bars" id="bars"></div>
+    <div class="insight" id="insight1"></div>
+  </section>
+
+  <!-- 4. Sizing -->
+  <section class="slide" id="sizing">
+    <div class="eyebrow">04 · Оценка рынка</div>
+    <h2>Сколько раз Серёжа звал тебя поесть?</h2>
+    <div class="glass guess" id="guessBox">
+      <div class="big" id="guessVal">5</div>
+      <input type="range" id="guess" min="0" max="15" value="5" aria-label="Твоя оценка">
+      <div class="scale"><span>0</span><span>15</span></div>
+      <p class="soft" style="font-size:13.5px">Как на кейсе: сначала оценка, потом факт.</p>
+    </div>
+    <div id="sizeOut" hidden>
+      <div class="glass" style="display:flex;flex-direction:column;gap:14px">
+        <div class="verdict"><span>Факт</span><b class="mono">7</b></div>
+        <p id="guessNote" class="soft"></p>
+        <ul class="inv" id="invList"></ul>
+        <div class="verdict" style="border-top:1px solid var(--glass-line);padding-top:12px"><span>Конверсия</span><b class="mono">1 / 7</b></div>
+        <p class="soft">Плов отдельно: позвал три раза, принято ноль. Рынок огромный, конверсия низкая. В новом году чиним.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Strategy -->
+  <section class="slide" id="strategy">
+    <div class="eyebrow">05 · Стратегия</div>
+    <h2>Куда расти в новом году жизни</h2>
+    <p class="soft">Открой все три варианта</p>
+    <div class="cards" id="cards"></div>
+    <div class="glass reco" id="reco">
+      <div class="eyebrow">Рекомендация ментора</div>
+      <h3 style="font-size:24px;margin-top:8px">Брать все три. Газ.</h3>
+    </div>
+  </section>
+
+  <!-- 6. Jury -->
+  <section class="slide" id="jury">
+    <div class="eyebrow">06 · Жюри</div>
+    <h2>Оценки</h2>
+    <div class="crit" id="crit"></div>
+    <div class="glass total"><span>Итого</span><b class="mono" id="total">0 / 40</b></div>
+    <div class="win" id="winStamp">Победитель</div>
+  </section>
+
+  <!-- 7. Final -->
+  <section class="slide" id="final">
+    <div class="eyebrow">07 · Итог</div>
+    <img class="photo" src="media/us.jpg" alt="Мы втроём у синей стены">
+    <div class="glass letter" id="letter"></div>
+    <div class="glass">
+      <div class="eyebrow">Вывод. Делаю жирнее, как ты советовал</div>
+      <div class="bold-out" style="margin-top:10px">С днём рождения, Нияз!</div>
+      <div class="sign" id="solved" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <nav class="nav" id="nav">
+    <button class="btn back" id="prev" aria-label="Назад" hidden>‹</button>
+    <button class="btn" id="next">Открыть кейс</button>
+  </nav>
+
+  <canvas id="confetti"></canvas>
+  <button id="mute" aria-label="Выключить звук">
+    <svg class="on" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+    <svg class="off" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+  </button>
+</div>
+
+<script>
+/* ============================================================
+   НАСТРОЙКИ: всё из переписки, дословно
+   ============================================================ */
+const STORY = [
+  { d: "15.05.2025", t: "Первое сообщение от тебя: <q>Если у тебя есть ещё вопросы, задавай, я отвечу, помогу чем смогу без проблем</q>. С тех пор так и есть." },
+  { d: "22.04.2026", t: "<q>Соседа на дедлайн выбрал?</q> — <q>неа</q> — <q>газ вместе?</q> — <q>Газ)</q>. Два ментора «Дедлайна», один номер на двоих.", img: "media/deadline.jpg", alt: "Менторы кейс-чемпионата «Дедлайн»" },
+  { d: "29.04.2026", t: "Финальная преза твоей команды: таймлайн сверху, фоны, стеклянные элементы. <q>Газзз. Передал ребятам, они рады</q>." },
+  { d: "30.04.2026", t: "Чемоданы, каршеринг, решение за минуту: <q>Я за рулём поеду</q>." },
+  { d: "23.05.2026", t: "<q>Я в костюме, брат, не пустят</q>. Встреча с бывшим начальником из правительства в «Быке», потом ночная прогулка до Лубянки." },
+  { d: "10.06.2026", t: "<q>Ложусь в 22–23, просыпаюсь в 6–7. Это достижение. Будет работать до первого похода в Ровесник</q>." },
+  { d: "12.09.2026", t: "<q>Хасл хату делаем?))</q>" }
+];
+const BARS = [
+  { k: "Сообщений от Серёжи", v: 575, max: 575 },
+  { k: "Сообщений от Нияза", v: 264, max: 575, alt: true },
+  { k: "Нияз сказал «брат»", v: 17, max: 20 },
+  { k: "Нияз смеялся «ахахах»", v: 15, max: 20, alt: true },
+  { k: "«Газ» на двоих", v: 13, max: 20 },
+  { k: "Ответ «я в Казани»", v: 5, max: 20, alt: true }
+];
+const INVITES = [
+  { ok: true, d: "01.05", q: "на завтрак в пекарню?", a: "Газ" },
+  { d: "01.05", q: "можно в узбечку, плова, манты", a: "Я только в Казань прилетел брат" },
+  { d: "31.05", q: "Плова пойдём кушать?", a: "Я сыт брат, только поевший" },
+  { d: "10.06", q: "на завтрак не хочешь никуда?", a: "Я не в космосе, сегодня у брата ночевал" },
+  { d: "13.06", q: "плова хочу", a: "сменил тему", noq: true },
+  { d: "20.09", q: "Хочешь наполеон?", a: "Не брат) спасибки" },
+  { d: "28.09", q: "Кушать?", a: "Я в Казань уехал брат" }
+];
+const CARDS = [
+  { t: "Консалтинг", s: "Самый быстрый рост",
+    b: "<q>Управленческий консалтинг — сделка с дьяволом, потому что ты получаешь самый быстрый рост в карьере</q>. Это ты записал на встрече с Маресовым. Go the extra mile ты уже умеешь." },
+  { t: "Чилл до 3 курса", s: "Совет Маресова",
+    b: "<q>Чилл до 3 курса, ребята, не бегите</q>. Третий курс наступил. Чилл официально закрыт." },
+  { t: "Бюрократия", s: "Твой вариант",
+    b: "<q>Я пока что больше склоняюсь к бюрократии и консалтингу</q>. Костюм есть, встречи с правительством есть. Осталось, чтобы в костюме пускали в клуб." }
+];
+const CRIT = [
+  { k: "Презентации", n: "Таймлайн сверху, фоны, стекло. Этот кейс свёрстан по твоему стандарту.", v: 10 },
+  { k: "Надёжность", n: "Преза для моего собеса, конспект Маресова, GPT, когда горело. «Помогу чем смогу» работает.", v: 10 },
+  { k: "Режим", n: "22–23 и 6–7. Минус балл за Ровесник.", v: 9 },
+  { k: "Плов", n: "«Я сыт брат». Жюри всё помнит.", v: 6 }
+];
+const LETTER = [
+  "Нияз, брат, с днём рождения!",
+  "Ты с первого сообщения написал <q>помогу чем смогу без проблем</q> и с тех пор так и делаешь. Подсказал по выводу, который надо сделать жирнее, скинул презу к моему собесу, записал за меня тейки Маресова.",
+  "Желаю, чтобы консалтинг взял тебя туда, куда ты целишься, и платил за каждый extra mile. Чтобы квартира в Казани доремонтировалась, режим продержался дольше первого Ровесника, а в костюме пускали везде.",
+  "И с тебя плов. Я всё ещё зову."
+];
+/* ============================================================ */
+
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sleep = ms => new Promise(r => setTimeout(r, reduced ? 0 : ms));
+const vibrate = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+
+/* ---------- sound: glassy synth ---------- */
+const FX = (() => {
+  let ctx = null, master = null, noise = null, muted = false;
+  function init() {
+    if (ctx) { if (ctx.state === "suspended") ctx.resume(); return; }
+    try {
+      try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = muted ? 0 : .8; master.connect(ctx.destination);
+      const len = ctx.sampleRate; noise = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = noise.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) { ctx = null; }
+  }
+  function note(f, t0, dur, peak = .1, type = "sine") {
+    if (!ctx) return;
+    const t = ctx.currentTime + t0, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + .05);
+  }
+  function swoosh(d = .35) {
+    if (!ctx) return;
+    const t = ctx.currentTime, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noise; f.type = "bandpass"; f.Q.value = .9;
+    f.frequency.setValueAtTime(600, t); f.frequency.exponentialRampToValueAtTime(3800, t + d);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.12, t + d * .5); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + d + .05);
+  }
+  return {
+    init, swoosh,
+    tap() { note(1760, 0, .08, .05); note(2637, .02, .1, .03); },
+    pop() { note(880, 0, .18, .08, "triangle"); note(1320, .06, .22, .06, "triangle"); },
+    tick() { note(1200, 0, .05, .04, "square"); },
+    no() { note(330, 0, .16, .06, "triangle"); },
+    yes() { note(784, 0, .2, .07, "triangle"); note(1175, .09, .3, .07, "triangle"); },
+    win() { [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => note(f, i * .09, 1.1, .07, "triangle")); note(2093, .5, 1.2, .04); },
+    toggle() { muted = !muted; if (master) master.gain.setTargetAtTime(muted ? 0 : .8, ctx.currentTime, .05); return muted; }
+  };
+})();
+$("#mute").addEventListener("click", () => { FX.init(); const m = FX.toggle(); $("#mute").classList.toggle("muted", m); $("#mute").setAttribute("aria-label", m ? "Включить звук" : "Выключить звук"); });
+
+/* ---------- deck engine ---------- */
+const IDS = ["cover", "brief", "story", "data", "sizing", "strategy", "jury", "final"];
+const LABELS = ["Бриф", "История", "Данные", "Оценка", "Стратегия", "Жюри", "Итог"];
+const NEXT = { cover: "Открыть кейс", brief: "К истории", story: "Дальше", data: "К оценке рынка", sizing: "Зафиксировать оценку", strategy: "К жюри", jury: "К итогу", final: "Газ" };
+const hooks = {};
+let cur = 0, reached = 0, run = 0;
+$("#tlBars").innerHTML = LABELS.map((l, i) => `<button data-i="${i + 1}" disabled><i></i><span>${l}</span></button>`).join("");
+function render() {
+  document.querySelectorAll("#tlBars button").forEach(b => {
+    const i = +b.dataset.i;
+    b.classList.toggle("done", i < cur); b.classList.toggle("cur", i === cur);
+    b.disabled = i > reached || i === cur;
+  });
+  $("#tl").hidden = cur === 0;
+  $("#prev").hidden = cur <= 1;
+  $("#next").textContent = NEXT[IDS[cur]];
+}
+function go(i) {
+  run++;
+  document.querySelectorAll(".slide").forEach(s => s.classList.remove("on"));
+  cur = i; reached = Math.max(reached, i);
+  const el = document.getElementById(IDS[i]); el.classList.add("on"); el.scrollTop = 0;
+  $("#next").disabled = false;
+  render();
+  if (hooks[IDS[i]]) hooks[IDS[i]](run);
+}
+$("#tlBars").addEventListener("click", e => { const b = e.target.closest("button"); if (b && !b.disabled) { FX.init(); FX.swoosh(); go(+b.dataset.i); } });
+$("#prev").addEventListener("click", () => { FX.init(); FX.swoosh(); if (cur > 1) go(cur - 1); });
+$("#next").addEventListener("click", () => {
+  FX.init();
+  const id = IDS[cur];
+  if (step[id] && step[id]()) return;          // слайд сам обработал нажатие
+  if (cur < IDS.length - 1) { FX.swoosh(); vibrate(10); go(cur + 1); }
+});
+const step = {};
+const alive = r => r === run;
+
+/* ---------- timer ---------- */
+let t0 = 0, timerId = 0, solvedIn = 0;
+function startTimer() {
+  if (t0) return;
+  t0 = Date.now();
+  timerId = setInterval(() => {
+    const left = Math.max(0, 300 - Math.floor((Date.now() - t0) / 1000));
+    $("#timer").textContent = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+    $("#timer").classList.toggle("low", left <= 60);
+    if (!left) $("#timer").textContent = "Жюри ждёт";
+  }, 500);
+}
+const fmtDur = s => `${Math.floor(s / 60)} мин ${s % 60} с`;
+
+/* 0. cover */
+step.cover = () => { FX.yes(); startTimer(); return false; };
+
+/* 2. story: reveal one event per tap */
+$("#storyList").innerHTML = STORY.map(e => `<div class="ev"><div class="glass"><time>${e.d}</time><p>${e.t}</p>${e.img ? `<img src="${e.img}" alt="${e.alt}" loading="lazy">` : ""}</div></div>`).join("");
+const evs = [...document.querySelectorAll("#storyList .ev")];
+let shown = 0;
+function revealEv() {
+  evs[shown].classList.add("in"); shown++; FX.pop();
+  setTimeout(() => evs[shown - 1].scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "end" }), 40);
+  $("#next").textContent = shown < evs.length ? "Дальше" : "К данным";
+}
+hooks.story = () => { if (!shown) revealEv(); else $("#next").textContent = shown < evs.length ? "Дальше" : "К данным"; };
+step.story = () => { if (shown < evs.length) { revealEv(); return true; } return false; };
+
+/* 3. data */
+$("#bars").innerHTML = BARS.map(b => `<div class="bar${b.alt ? " alt" : ""}"><div class="row"><span>${b.k}</span><b class="mono" data-v="${b.v}">0</b></div><div class="track"><div class="fill" data-w="${Math.round(b.v / b.max * 100)}"></div></div></div>`).join("");
+$("#insight1").innerHTML = "Серёжа пишет в 2,2 раза больше. Нияз отвечает реже, но по делу и с <q>брат</q>.";
+hooks.data = async r => {
+  const fills = [...document.querySelectorAll("#bars .fill")], nums = [...document.querySelectorAll("#bars b")];
+  fills.forEach(f => f.style.width = "0"); nums.forEach(n => n.textContent = "0");
+  await sleep(250);
+  for (let i = 0; i < fills.length; i++) {
+    if (!alive(r)) return;
+    fills[i].style.width = fills[i].dataset.w + "%"; FX.tick();
+    countUp(nums[i], +nums[i].dataset.v, 900);
+    await sleep(180);
+  }
+};
+function countUp(el, to, ms) {
+  if (reduced) { el.textContent = to; return; }
+  const s = performance.now();
+  (function f(t) { const p = Math.min(1, (t - s) / ms); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(s);
+}
+
+/* 4. sizing */
+let sized = false;
+$("#guess").addEventListener("input", e => { $("#guessVal").textContent = e.target.value; FX.tick(); });
+$("#invList").innerHTML = INVITES.map(v => `<li class="${v.ok ? "ok" : ""}"><i>${v.ok ? "✓" : "✕"}</i><span><em>${v.d}</em> <q>${v.q}</q> → ${v.noq ? v.a : `<q>${v.a}</q>`}</span></li>`).join("");
+hooks.sizing = () => { $("#next").textContent = sized ? "К стратегии" : "Зафиксировать оценку"; };
+step.sizing = () => {
+  if (sized) return false;
+  sized = true;
+  const g = +$("#guess").value, diff = Math.abs(g - 7);
+  $("#guess").disabled = true;
+  $("#guessNote").textContent = diff === 0 ? "Точно в цель. Консалтинг тебя ждёт." : diff <= 2 ? `Ошибка ${diff}. Для кейса отлично.` : `Ошибка ${diff}. Ничего, жюри смотрит на логику.`;
+  $("#sizeOut").hidden = false;
+  diff === 0 ? FX.yes() : FX.pop();
+  $("#next").textContent = "К стратегии";
+  const lis = [...document.querySelectorAll("#invList li")], r = run;
+  setTimeout(() => $("#sizeOut").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }), 60);
+  (async () => { for (const li of lis) { await sleep(320); if (!alive(r)) { lis.forEach(l => l.classList.add("in")); return; } li.classList.add("in"); li.classList.contains("ok") ? FX.yes() : FX.no(); } })();
+  return true;
+};
+
+/* 5. strategy */
+$("#cards").innerHTML = CARDS.map((c, i) => `<button class="flip glass" data-i="${i}" aria-expanded="false"><span class="eyebrow">${c.s}</span><h3>${c.t}</h3><span class="hint">Нажми, чтобы открыть</span><span class="body">${c.b}</span></button>`).join("");
+const opened = new Set();
+$("#cards").addEventListener("click", e => {
+  const f = e.target.closest(".flip"); if (!f) return;
+  if (f.classList.contains("open")) return;
+  FX.init(); f.classList.add("open"); f.setAttribute("aria-expanded", "true"); FX.pop(); vibrate(10);
+  opened.add(f.dataset.i);
+  if (opened.size === CARDS.length && !$("#reco").classList.contains("in")) {
+    $("#reco").classList.add("in"); FX.yes(); $("#next").disabled = false;
+    setTimeout(() => $("#reco").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "end" }), 60);
+  }
+});
+hooks.strategy = () => { $("#next").disabled = opened.size < CARDS.length; };
+
+/* 6. jury */
+$("#crit").innerHTML = CRIT.map(c => `<div class="c"><h3>${c.k}</h3><small>${c.n}</small><b class="mono" data-v="${c.v}">–</b></div>`).join("");
+let juryDone = false;
+hooks.jury = async r => {
+  const bs = [...document.querySelectorAll("#crit b")];
+  if (juryDone) { bs.forEach(b => b.textContent = b.dataset.v); $("#total").textContent = "35 / 40"; $("#winStamp").classList.add("hit"); return; }
+  $("#next").disabled = true;
+  let sum = 0;
+  for (const b of bs) {
+    await sleep(650); if (!alive(r)) return;
+    b.textContent = b.dataset.v; sum += +b.dataset.v; $("#total").textContent = `${sum} / 40`;
+    +b.dataset.v >= 9 ? FX.yes() : FX.no(); vibrate(15);
+  }
+  await sleep(500); if (!alive(r)) return;
+  $("#winStamp").classList.add("hit"); FX.win(); vibrate([40, 30, 90]); confetti();
+  juryDone = true; $("#next").disabled = false;
+};
+
+/* 7. final */
+$("#letter").innerHTML = LETTER.map((p, i) => i ? `<p>${p}</p>` : `<h3 style="margin-bottom:10px;font-size:20px">${p}</h3>`).join("") + `<p class="sign" style="margin-top:14px">Серёжа, сосед по номеру на «Дедлайне»</p>`;
+hooks.final = () => {
+  if (!solvedIn && t0) { solvedIn = Math.round((Date.now() - t0) / 1000); clearInterval(timerId); $("#timer").textContent = "Решено"; }
+  $("#solved").textContent = solvedIn ? `Кейс решён за ${fmtDur(solvedIn)}` : "";
+  FX.win(); confetti();
+};
+step.final = () => { FX.win(); vibrate([30, 30, 60]); confetti(); return true; };
+
+/* confetti: blue, lilac, white, gold */
+function confetti() {
+  if (reduced) return;
+  const cv = $("#confetti"), r = app.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  cv.width = r.width * dpr; cv.height = r.height * dpr;
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cols = ["#ffffff", "#c4adf4", "#6fd6ea", "#ffd36b", "#2c5be0"];
+  const P = Array.from({ length: 130 }, () => ({ x: r.width / 2, y: r.height * .35, vx: (Math.random() - .5) * 12, vy: -Math.random() * 12 - 3, s: 5 + Math.random() * 6, a: Math.random() * 6, va: (Math.random() - .5) * .4, c: cols[Math.random() * cols.length | 0] }));
+  const s0 = performance.now();
+  (function f(t) {
+    g.clearRect(0, 0, r.width, r.height);
+    P.forEach(p => { p.vy += .32; p.x += p.vx; p.y += p.vy; p.a += p.va; g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); });
+    if (t - s0 < 3000) requestAnimationFrame(f); else g.clearRect(0, 0, r.width, r.height);
+  })(s0);
+}
+
+go(0);
+</script>
+</body>
+</html>
